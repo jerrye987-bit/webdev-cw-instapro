@@ -15,6 +15,7 @@ import {
   removeUserFromLocalStorage,
   saveUserToLocalStorage,
 } from "./helpers.js";
+import { showToast } from "./components/toast.js";
 
 export let user = getUserFromLocalStorage();
 export let page = null;
@@ -124,7 +125,7 @@ const renderApp = () => {
           })
           .catch((error) => {
             console.error(error);
-            alert(error.message);
+            showToast(error.message);
           });
       },
     });

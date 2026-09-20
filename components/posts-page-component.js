@@ -2,6 +2,7 @@ import { USER_POSTS_PAGE, AUTH_PAGE } from "../routes.js";
 import { renderHeaderComponent } from "./header-component.js";
 import { posts, goToPage, user } from "../index.js";
 import { likePost, dislikePost, deletePost } from "../api.js";
+import { showToast } from "./toast.js";
 
 function plural(n, one, few, many) {
   if (n % 10 === 1 && n % 100 !== 11) return one;
@@ -22,8 +23,7 @@ function formatDate(dateString) {
     return `${minutes} ${plural(minutes, "минуту", "минуты", "минут")} назад`;
   if (hours < 24)
     return `${hours} ${plural(hours, "час", "часа", "часов")} назад`;
-  if (days < 7)
-    return `${days} ${plural(days, "день", "дня", "дней")} назад`;
+  if (days < 7) return `${days} ${plural(days, "день", "дня", "дней")} назад`;
   return date.toLocaleDateString("ru-RU");
 }
 
@@ -38,7 +38,7 @@ export function renderPostsPageComponent({ appEl }) {
         ? "./assets/images/like-active.svg"
         : "./assets/images/like-not-active.svg";
 
-            const isOwnPost = user && post.user && user._id === post.user.id;
+      const isOwnPost = user && post.user && user._id === post.user.id;
 
       return `
         <li class="post" data-post-id="${post.id}">
@@ -92,7 +92,7 @@ export function renderPostsPageComponent({ appEl }) {
       const postId = button.dataset.postId;
 
       if (!user) {
-        alert("Войдите, чтобы ставить лайки");
+        showToast("Войдите, чтобы ставить лайки");
         goToPage(AUTH_PAGE);
         return;
       }
@@ -116,7 +116,7 @@ export function renderPostsPageComponent({ appEl }) {
         })
         .catch((error) => {
           console.error(error);
-          alert(error.message);
+          showToast(error.message);
           button.disabled = false;
         });
     });
@@ -142,10 +142,11 @@ export function renderPostsPageComponent({ appEl }) {
             posts.splice(index, 1);
           }
           renderPostsPageComponent({ appEl });
+          showToast("Пост удалён", "success");
         })
         .catch((error) => {
           console.error(error);
-          alert(error.message);
+          showToast(error.message, "error");
         });
     });
   });
