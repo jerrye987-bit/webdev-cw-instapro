@@ -144,3 +144,21 @@ const renderApp = () => {
 };
 
 goToPage(POSTS_PAGE);
+
+// Кнопка "Наверх"
+const scrollToTopBtn = document.createElement("button");
+scrollToTopBtn.className = "scroll-to-top";
+scrollToTopBtn.textContent = "↑";
+document.body.appendChild(scrollToTopBtn);
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 300) {
+    scrollToTopBtn.classList.add("visible");
+  } else {
+    scrollToTopBtn.classList.remove("visible");
+  }
+});
+
+scrollToTopBtn.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
