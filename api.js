@@ -48,16 +48,15 @@ export function addPost({ token, description, imageUrl }) {
       description,
       imageUrl,
     }),
-  })
-    .then((response) => {
-      if (response.status === 400) {
-        throw new Error("Не заполнено описание или ссылка на фото");
-      }
-      if (response.status === 401) {
-        throw new Error("Нет авторизации");
-      }
-      return response.json();
-    });
+  }).then((response) => {
+    if (response.status === 400) {
+      throw new Error("Не заполнено описание или ссылка на фото");
+    }
+    if (response.status === 401) {
+      throw new Error("Нет авторизации");
+    }
+    return response.json();
+  });
 }
 
 export function likePost({ token, postId }) {
@@ -102,13 +101,12 @@ export function deletePost({ token, postId }) {
     headers: {
       Authorization: token,
     },
-  })
-    .then((response) => {
-      if (response.status === 401) {
-        throw new Error("Нет авторизации");
-      }
-      return response.json();
-    });
+  }).then((response) => {
+    if (response.status === 401) {
+      throw new Error("Нет авторизации");
+    }
+    return response.json();
+  });
 }
 
 export function registerUser({ login, password, name, imageUrl }) {
@@ -151,6 +149,12 @@ export function uploadImage({ file }) {
     method: "POST",
     body: data,
   }).then((response) => {
+    if (response.status === 400) {
+      throw new Error("Файл слишком большой или неверный формат");
+    }
+    if (response.status === 401) {
+      throw new Error("Нет авторизации");
+    }
     return response.json();
   });
 }
