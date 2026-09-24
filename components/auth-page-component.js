@@ -42,26 +42,28 @@ export function renderAuthPageComponent({ appEl, setUser }) {
                     : "Регистрация в&nbsp;Instapro"
                 }
               </h3>
-              <div class="form-inputs">
-                  ${
-                    !isLoginMode
-                      ? `
-                      <div class="upload-image-container"></div>
-                      <input type="text" id="name-input" class="input" placeholder="Имя" />
-                      `
-                      : ""
-                  }
-                  <input type="text" id="login-input" class="input" placeholder="Логин" />
-                  <input type="password" id="password-input" class="input" placeholder="Пароль" />
-                  <div class="form-error"></div>
-                  <button class="button" id="login-button">${
-                    isLoginMode ? "Войти" : "Зарегистрироваться"
-                  }</button>
-              </div>
+              <form id="auth-form">
+                <div class="form-inputs">
+                    ${
+                      !isLoginMode
+                        ? `
+                        <div class="upload-image-container"></div>
+                        <input type="text" id="name-input" class="input" placeholder="Имя" autocomplete="name" />
+                        `
+                        : ""
+                    }
+                    <input type="text" id="login-input" class="input" placeholder="Логин" autocomplete="username" />
+                    <input type="password" id="password-input" class="input" placeholder="Пароль" autocomplete="current-password" />
+                    <div class="form-error"></div>
+                    <button class="button" id="login-button">${
+                      isLoginMode ? "Войти" : "Зарегистрироваться"
+                    }</button>
+                </div>
+              </form>
               <div class="form-footer">
                 <p class="form-footer-title">
                   ${isLoginMode ? "Нет аккаунта?" : "Уже есть аккаунт?"}
-                  <button class="link-button" id="toggle-button">
+                  <button class="link-button" id="toggle-button" type="button">
                     ${isLoginMode ? "Зарегистрироваться." : "Войти."}
                   </button>
                 </p>
@@ -71,6 +73,10 @@ export function renderAuthPageComponent({ appEl, setUser }) {
     `;
 
     appEl.innerHTML = appHtml;
+
+    appEl.querySelector("#auth-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+    });
 
     /**
      * Устанавливает сообщение об ошибке в форме.
@@ -97,7 +103,8 @@ export function renderAuthPageComponent({ appEl, setUser }) {
     }
 
     // Обработка клика на кнопку входа/регистрации
-    document.getElementById("login-button").addEventListener("click", () => {
+    document.getElementById("login-button").addEventListener("click", (e) => {
+      e.preventDefault();
       setError("");
 
       if (isLoginMode) {
@@ -106,12 +113,12 @@ export function renderAuthPageComponent({ appEl, setUser }) {
         const password = document.getElementById("password-input").value;
 
         if (!login) {
-          alert("Введите логин");
+          setError("Введите логин");
           return;
         }
 
         if (!password) {
-          alert("Введите пароль");
+          setError("Введите пароль");
           return;
         }
 
@@ -120,7 +127,6 @@ export function renderAuthPageComponent({ appEl, setUser }) {
             setUser(user.user);
           })
           .catch((error) => {
-            console.warn(error);
             setError(error.message);
           });
       } else {
@@ -130,22 +136,22 @@ export function renderAuthPageComponent({ appEl, setUser }) {
         const password = document.getElementById("password-input").value;
 
         if (!name) {
-          alert("Введите имя");
+          setError("Введите имя");
           return;
         }
 
         if (!login) {
-          alert("Введите логин");
+          setError("Введите логин");
           return;
         }
 
         if (!password) {
-          alert("Введите пароль");
+          setError("Введите пароль");
           return;
         }
 
         if (!imageUrl) {
-          alert("Не выбрана фотография");
+          setError("Не выбрана фотография");
           return;
         }
 
@@ -154,7 +160,6 @@ export function renderAuthPageComponent({ appEl, setUser }) {
             setUser(user.user);
           })
           .catch((error) => {
-            console.warn(error);
             setError(error.message);
           });
       }

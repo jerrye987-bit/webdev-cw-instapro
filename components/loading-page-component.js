@@ -1,34 +1,35 @@
 import { renderHeaderComponent } from "./header-component.js";
 
-/**
- * Компонент страницы загрузки.
- * Этот компонент отображает страницу с индикатором загрузки и заголовком.
- * Используется для отображения промежуточного состояния, пока выполняется загрузка данных или другой процесс.
- * 
- * @param {HTMLElement} params.appEl - Корневой элемент приложения, в который будет рендериться страница загрузки.
- * @param {Object} params.user - Объект пользователя, содержащий данные о текущем авторизованном пользователе (если он есть).
- * @param {Function} params.goToPage - Функция для навигации по страницам.
- */
+// Скелетоны при загрузке ленты
 export function renderLoadingPageComponent({ appEl, user, goToPage }) {
-  /**
-   * HTML-разметка страницы загрузки.
-   * Содержит контейнер заголовка и индикатор загрузки.
-   */
-  const appHtml = `
-              <div class="page-container">
-                <div class="header-container"></div>
-                <div class="loading-page">
-                  <div class="loader"><div></div><div></div><div></div></div>
-                </div>
-              </div>`;
+  const skeletonsHtml = Array(3)
+    .fill("")
+    .map(
+      () => `
+        <li class="post skeleton-post">
+          <div class="skeleton skeleton-header">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-name"></div>
+          </div>
+          <div class="skeleton skeleton-image"></div>
+          <div class="skeleton skeleton-line"></div>
+          <div class="skeleton skeleton-line short"></div>
+        </li>
+      `,
+    )
+    .join("");
 
-  // Устанавливаем разметку в корневой элемент приложения
+  const appHtml = `
+    <div class="page-container">
+      <div class="header-container"></div>
+      <ul class="posts">
+        ${skeletonsHtml}
+      </ul>
+    </div>
+  `;
+
   appEl.innerHTML = appHtml;
 
-  /**
-   * Рендеринг заголовка с использованием компонента `renderHeaderComponent`.
-   * Передаются данные пользователя и функция навигации.
-   */
   renderHeaderComponent({
     user,
     element: document.querySelector(".header-container"),
